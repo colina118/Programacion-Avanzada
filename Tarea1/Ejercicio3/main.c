@@ -22,12 +22,19 @@ void agregarPaciente(persona **p, int *num);
 int main(int argc, char **argv)
 {
 	int opcion = -1;
-	int numCamas = 2;
+	int numCamas = 1;
 	int numAsignada = 0;
 	int numPacientes = 0;
+	int i;
 	int pacPorCama;
 	cama * camas =(cama *)malloc(numCamas*sizeof(cama));
 	persona * paciente;
+	
+	for(i =0; i < numCamas; i++)
+	{
+		((camas)+i)->numero = i;
+		((camas)+i)->ocupada = 0;
+	}
 	
 	while(opcion != 0)
 	{
@@ -37,10 +44,16 @@ int main(int argc, char **argv)
 		{
 			case 1:
 			{
-				if(numPacientes == 0)
+				if(numPacientes+1 > numCamas)
 				{
-					numPacientes++;
-					paciente = (persona *)malloc(numPacientes * sizeof(persona));
+					numCamas += 5;
+					realloc(camas, numCamas * sizeof(cama));
+					for(i = numCamas-5; i < numCamas; i++)
+					{
+						((camas)+i)->numero = i;
+						((camas)+i)->ocupada = 0;
+					}
+					printf("Hasta aqui voy bien");
 					agregarPaciente(&paciente, &numPacientes);
 					printf("Introduzca el telefono del paciente\n");
 					scanf("\n%[^\n]", ((paciente) + numPacientes)->telefono);
@@ -50,54 +63,45 @@ int main(int argc, char **argv)
 					scanf("\n%[^\n]", ((paciente) + numPacientes)->nombre);
 					printf("Introduzca el apellido del paciente\n");
 					scanf("\n%[^\n]", ((paciente) + numPacientes)->apellido);
-					((paciente) + numPacientes)->camita = numAsignada + 1;
-					((camas)+numAsignada)->ocupante = *(paciente + numPacientes);
-					((camas)+numAsignada)->ocupada = 1;
-					numAsignada++;
-					
+					for(i = 0; i < numCamas; i++)
+					{
+						if(((camas)+i)->ocupada == 0)
+						{
+							((paciente) + numPacientes)->camita = ((camas)+i)->numero;
+							((camas)+i)->ocupante = *(paciente + numPacientes);
+							((camas)+i)->ocupada = 1;
+							numAsignada++;
+							numPacientes++;
+							break;
+						}
+					}
 				}
 				else
 				{
-					numPacientes++;
-					if(numPacientes+1 > numCamas)
+					agregarPaciente(&paciente, &numPacientes);
+					printf("Introduzca el telefono del paciente\n");
+					scanf("\n%[^\n]", ((paciente) + numPacientes)->telefono);
+					printf("Introduzca la edad del paciente\n");
+					scanf("\n%[^\n]", ((paciente) + numPacientes)->edad);
+					printf("Introduzca el nombre del paciente\n");
+					scanf("\n%[^\n]", ((paciente) + numPacientes)->nombre);
+					printf("Introduzca el apellido del paciente\n");
+					scanf("\n%[^\n]", ((paciente) + numPacientes)->apellido);
+					for(i = 0; i < numCamas;i++)
 					{
-						numCamas += 5;
-						realloc(camas, numCamas * sizeof(cama));
-						realloc(paciente, numPacientes * sizeof(persona));
-						agregarPaciente(&paciente, &numPacientes);
-						printf("Introduzca el telefono del paciente\n");
-						scanf("\n%[^\n]", ((paciente) + numPacientes)->telefono);
-						printf("Introduzca la edad del paciente\n");
-						scanf("\n%[^\n]", ((paciente) + numPacientes)->edad);
-						printf("Introduzca el nombre del paciente\n");
-						scanf("\n%[^\n]", ((paciente) + numPacientes)->nombre);
-						printf("Introduzca el apellido del paciente\n");
-						scanf("\n%[^\n]", ((paciente) + numPacientes)->apellido);
-						((paciente) + numPacientes)->camita = numAsignada + 1;
-						((camas)+numAsignada)->ocupante = *(paciente + numPacientes);
-						((camas)+numAsignada)->ocupada = 1;
-						numAsignada++;
-					}
-					else
-					{
-						realloc(paciente, numPacientes * sizeof(persona));
-						agregarPaciente(&paciente, &numPacientes);
-						printf("Introduzca el telefono del paciente\n");
-						scanf("\n%[^\n]", ((paciente) + numPacientes)->telefono);
-						printf("Introduzca la edad del paciente\n");
-						scanf("\n%[^\n]", ((paciente) + numPacientes)->edad);
-						printf("Introduzca el nombre del paciente\n");
-						scanf("\n%[^\n]", ((paciente) + numPacientes)->nombre);
-						printf("Introduzca el apellido del paciente\n");
-						scanf("\n%[^\n]", ((paciente) + numPacientes)->apellido);
-						((paciente) + numPacientes)->camita = numAsignada + 1;
-						((camas)+numAsignada)->ocupante = *(paciente + numPacientes);
-						((camas)+numAsignada)->ocupada = 1;
-						numAsignada++;
+						if(((camas)+i)->ocupada == 0)
+						{
+							((paciente) + numPacientes)->camita = ((camas)+i)->numero;
+							((camas)+i)->ocupante = *(paciente + numPacientes);
+							((camas)+i)->ocupada = 1;
+							numAsignada++;
+							numPacientes++;
+							break;
+						}
 					}
 				}
-				
-				break;
+			
+			break;
 			}
 			case 2:
 			{
@@ -111,7 +115,7 @@ int main(int argc, char **argv)
 					printf("\n");
 					printf(((camas)+pacPorCama)->ocupante.apellido);
 					printf("\n");
-					printf(((camas)+numAsignada)->ocupante.telefono);
+					printf(((camas)+pacPorCama)->ocupante.telefono);
 					printf("\n");
 					printf(((camas)+pacPorCama)->ocupante.edad);
 					printf("\n");
@@ -125,14 +129,37 @@ int main(int argc, char **argv)
 			}
 			case 3:
 			{
+				
 				break;
 			}
 			case 4:
 			{
+				for(i = 0; i < numPacientes; i++)
+				{
+					printf("Paciente numero: ");
+					printf("%d", i+1);
+					printf("\n");
+					printf(((camas)+i)->ocupante.nombre);
+					printf("\n");
+					printf(((camas)+i)->ocupante.apellido);
+					printf("\n");
+					printf(((camas)+i)->ocupante.telefono);
+					printf("\n");
+					printf(((camas)+i)->ocupante.edad);
+					printf("\n");
+				}
 				break;
 			}
 			case 5:
 			{
+				for(i = 0; i < numCamas; i ++)
+				{
+					if(((camas)+i)->ocupada == 0)
+					{
+						printf("%d", ((camas)+i)->numero);
+						printf("\n");
+					}
+				}
 				break;
 			}
 			case 0:
@@ -148,7 +175,7 @@ int main(int argc, char **argv)
 		}
 		
 	}
-	printf(((paciente) + numPacientes)->camita);
+	printf(((paciente) + numPacientes-1)->nombre);
 	printf(((camas)+numAsignada)->ocupante.nombre);
 	return 0;
 }
@@ -156,10 +183,19 @@ int main(int argc, char **argv)
 
 void agregarPaciente(persona **p, int *num)
 {
-	(*p+(*num))->telefono =(char *)malloc(15*sizeof(char));
+	if(*num == 0 )
+	{
+		*p = (persona *)malloc(sizeof(persona));
+	}
+	else
+	{
+		*p = realloc(*p,(*num+1)*sizeof(persona));
+	}
+
 	(*p+(*num))->nombre =(char *)malloc(30*sizeof(char));
 	(*p+(*num))->apellido =(char *)malloc(30*sizeof(char));
+	(*p+(*num))->telefono =(char *)malloc(15*sizeof(char));
 	(*p+(*num))->edad =(int *)malloc(sizeof(int));
 	//(*p+(*num))->camita =(int *)malloc(sizeof(int));
-	
+	return;
 }
