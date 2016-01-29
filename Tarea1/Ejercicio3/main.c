@@ -45,7 +45,8 @@ int main(int argc, char **argv)
 		{
 			case 1:
 			{
-				if (numDisponible == 0) {
+				if (numDisponible == 0)
+				{
 					
 					numCamas = agregarCamas(&camas, &available, numCamas, &numDisponible, 5);
 				}
@@ -54,7 +55,7 @@ int main(int argc, char **argv)
 			break;
 			}
 			case 2:
-			{
+			{/*
 				printf("Escriba el numero de la cama de la cual quiere ver al paciente\n");
 				scanf("%d", &pacPorCama);
 				printf("Aqui no hay pedo\n");
@@ -74,7 +75,7 @@ int main(int argc, char **argv)
 				else
 				{
 					printf("Esa cama no tiene ningun paciente\n");
-				}
+				}*/
 				break;
 			}
 			case 3:
@@ -83,7 +84,7 @@ int main(int argc, char **argv)
 				break;
 			}
 			case 4:
-			{
+			{/*
 				for(i = 0; i < numCamas; i++)
 				{
 					if(((camas)+i)->ocupada != 0)
@@ -100,19 +101,19 @@ int main(int argc, char **argv)
 						printf("%d",((camas)+i)->ocupante->edad);
 						printf("\n");
 					}
-				}
+				}*/
 				break;
 			}
 			case 5:
 			{
-				for(i = 0; i < numCamas; i ++)
+				/*for(i = 0; i < numCamas; i ++)
 				{
 					if(((camas)+i)->ocupada == 0)
 					{
 						printf("%d", ((camas)+i)->numero);
 						printf("\n");
 					}
-				}
+				}*/
 				break;
 			}
 			case 0:
@@ -160,28 +161,30 @@ char* consigueString(char* car, int tam)
 	*(car + strcspn(car, "\n")) = 0;
 }
 
-int agregarDisponible(int** available, int id, int total) {
+int agregarDisponible(int** available, int id, int total) 
+{
 	*available = realloc(*available, (total + 1) * sizeof(int));
 	*(*available + total) = id;
 	return total + 1;
 }
 
-int encontrarDisponible(int** available, int* total) {
+int encontrarDisponible(int** available, int* total) 
+{
 	int id = *(*available + --(*total));
 	*available = realloc(*available, *total * sizeof(int));
 	return id;
 }
 
-
-int agregarCamas(cama** camas, int** available, int numCamas, int* numDisponible, int n) {
+int agregarCamas(cama** camas, int** available, int numCamas, int* numDisponible, int n)
+ {
 	*camas = realloc(*camas, (numCamas+n) * sizeof(cama));
 	cama *c, *end = *camas + numCamas + n;
 
-	for (c = *camas + numCamas; c < end; ++c) {
+	for (c = *camas + numCamas; c < end; ++c) 
+		{
 		c->numero = ++numCamas;
 		c->ocupante = NULL;
 		*numDisponible = agregarDisponible(available, c->numero, *numDisponible);
 	}
 	return numCamas;
 }
-
